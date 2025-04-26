@@ -40,4 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Ignore pnpm lock file
+pnpm-lock.yaml
+
 .env.local

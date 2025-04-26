@@ -7,13 +7,25 @@ import { usePathname, useSearchParams } from "next/navigation"
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-      api_host: "/ingest",
-      ui_host: "https://us.posthog.com",
-      capture_pageview: false, // We capture pageviews manually
-      capture_pageleave: true, // Enable pageleave capture
-      debug: process.env.NODE_ENV === "development",
-    })
+    try {
+      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+        api_host: "https://us.i.posthog.com", 
+        ui_host: "https://us.posthog.com",
+        loaded: (posthog) => {
+          if (process.env.NODE_ENV === 'development') {
+            // Check if we have a connection
+            if (posthog.config) {
+              console.log('PostHog loaded successfully')
+            }
+          }
+        },
+        capture_pageview: false, // We capture pageviews manually
+        capture_pageleave: true, // Enable pageleave capture
+        debug: process.env.NODE_ENV === "development"
+      })
+    } catch (error) {
+      console.error('Failed to initialize PostHog:', error)
+    }
   }, [])
 
   return (

@@ -11,6 +11,7 @@ export function PostHogActions() {
   const posthog = usePostHog()
   const [personName, setPersonName] = useState("")
   const [groupName, setGroupName] = useState("")
+  const [eventName, setEventName] = useState("")
   const [groupType] = useState("company") // We could make this configurable
 
   const identifyPerson = () => {
@@ -42,11 +43,17 @@ export function PostHogActions() {
   }
 
   const fireCustomEvent = () => {
-    posthog.capture("test_event", {
+    if (!eventName.trim()) {
+      toast.error("Please enter an event name")
+      return
+    }
+
+    posthog.capture(eventName, {
       source: "identify-test",
       timestamp: new Date().toISOString()
     })
-    toast.success("Fired test event")
+    toast.success(`Fired event: ${eventName}`)
+    setEventName("")
   }
 
   const resetSession = () => {
@@ -88,10 +95,18 @@ export function PostHogActions() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Actions</CardTitle>
+          <CardTitle>Custom Event</CardTitle>
         </CardHeader>
-        <CardContent className="flex gap-4">
-          <Button onClick={fireCustomEvent}>Fire Test Event</Button>
+        <CardContent className="flex flex-col gap-4">
+          <div className="flex gap-4">
+            <Input
+              placeholder="Enter event name"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && fireCustomEvent()}
+            />
+            <Button onClick={fireCustomEvent}>Fire Event</Button>
+          </div>
           <Button variant="destructive" onClick={resetSession}>Reset Session</Button>
         </CardContent>
       </Card>

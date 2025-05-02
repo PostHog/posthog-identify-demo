@@ -37,6 +37,46 @@ This project demonstrates how to integrate [PostHog](https://posthog.com) analyt
 
 4. Open [http://localhost:3000](http://localhost:3000) to use the demo UI.
 
+## Stripe Webhook & CLI Testing
+
+To test Stripe payment events and webhook integration locally:
+
+1. **Add Stripe and PostHog keys to `.env.local`:**
+   ```env
+   STRIPE_SECRET_KEY=sk_test_...
+   STRIPE_WEBHOOK_SECRET=whsec_...   # See step 4 below
+   NEXT_PUBLIC_POSTHOG_KEY=phc_...
+   NEXT_PUBLIC_BASE_URL=http://localhost:3000
+   ```
+
+2. **Install the Stripe CLI:**
+   [Install instructions](https://stripe.com/docs/stripe-cli#install)
+
+3. **Start your Next.js app:**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+4. **Start Stripe CLI webhook forwarding:**
+   ```bash
+   stripe listen --forward-to localhost:3000/api/stripe-webhook
+   ```
+   - Copy the webhook signing secret (`whsec_...`) from the output and add it to `.env.local` as `STRIPE_WEBHOOK_SECRET`.
+
+5. **Test a payment event:**
+   - Go through the `/checkout` flow in your app, or trigger a test event:
+     ```bash
+     stripe trigger checkout.session.completed
+     ```
+
+6. **Verify:**
+   - Check your terminal logs for webhook receipt and PostHog event firing.
+   - Check your PostHog dashboard for the `Purchase Succeeded` event.
+
+For more, see the [Stripe CLI docs](https://stripe.com/docs/stripe-cli#listen) and [PostHog Revenue Analytics](https://posthog.com/docs/web-analytics/revenue-analytics).
+
 ## Project Structure
 
 - `app/components/PostHogActions.tsx`: UI and logic for interacting with PostHog.

@@ -9,8 +9,8 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-        api_host: "https://us.i.posthog.com", 
-        ui_host: "https://us.posthog.com",
+        api_host: process.env.NEXT_PUBLIC_POSTHOG_API_HOST || "https://us.i.posthog.com", 
+        ui_host: process.env.NEXT_PUBLIC_POSTHOG_UI_HOST || "https://us.posthog.com",
         loaded: (posthog) => {
           if (process.env.NODE_ENV === 'development') {
             // Check if we have a connection
@@ -21,7 +21,8 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
         },
         capture_pageview: false, // We capture pageviews manually
         capture_pageleave: true, // Enable pageleave capture
-        debug: process.env.NODE_ENV === "development"
+        debug: process.env.NODE_ENV === "development",
+        persistence: "localStorage",
       })
     } catch (error) {
       console.error('Failed to initialize PostHog:', error)
@@ -44,7 +45,7 @@ function PostHogPageView() {
   useEffect(() => {
     if (pathname && posthog) {
       let url = window.origin + pathname
-      const search = searchParams?.toString()
+      const search = (searchParams?.toString?.() ?? "")
       if (search) {
         url += "?" + search
       }

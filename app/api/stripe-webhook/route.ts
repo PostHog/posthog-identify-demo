@@ -44,11 +44,13 @@ export async function POST(req: NextRequest) {
       posthog.capture({
         distinctId: distinct_id,
         event: "Purchase Succeeded",
+        groups: {
+          company: group_id
+        },
         properties: {
           value: amount, // Stripe always uses minor units
           currency,
           $session_id: session_id,
-          group_id,
           source: "stripe-webhook"
         }
       })

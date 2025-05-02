@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PostHogActions } from "./components/PostHogActions";
+import { PostHogActions } from "../components/PostHogActions";
 
 export default function Home() {
   return (

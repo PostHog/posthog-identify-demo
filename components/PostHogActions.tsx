@@ -63,7 +63,7 @@ export function PostHogActions() {
 
   return (
     <>
-      <div className="flex flex-col gap-6 w-full max-w-md">
+      <div className="flex flex-col gap-4 w-full max-w-md">
         <Card>
           <CardHeader>
             <CardTitle>Identify Person</CardTitle>

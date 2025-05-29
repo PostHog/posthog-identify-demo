@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { usePostHog } from "posthog-js/react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { isArray } from "util";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 
 interface Experiment {
   id: number;
@@ -94,31 +94,31 @@ function ExperimentCard({ experiment }: { experiment: Experiment }) {
   };
 
   return (
-    <div
+    <Card
       key={experiment.id}
-      className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow"
     >
-      <h3 className="font-semibold">{experiment.name}</h3>
-      {experiment.description && (
-        <p className="text-gray-600 mt-1">{experiment.description}</p>
-      )}
+      <CardHeader>
+        <CardTitle>{experiment.name}</CardTitle>
+      </CardHeader>
+      <CardContent>
+          <p className="text-gray-600 mt-1">{experiment.description || "No hypothesis"}</p>
       <div className="mt-2 text-sm text-gray-500">
         <p>Feature Flag: {experiment.feature_flag_key}</p>
         <p>
           Start Date: {new Date(experiment.start_date).toLocaleDateString()}
         </p>
       </div>
-      <div className="mt-2">
         <Button
           onClick={() => {
             generateExperimentEvents(experiment);
           }}
           disabled={generatingEvents}
+          className="w-full mt-4"
         >
           {generatingEvents ? "Generating Events..." : "Generate Events"}
         </Button>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -164,7 +164,7 @@ export function PostHogExperimentActions() {
       ) : experiments.length === 0 ? (
         <p>No active experiments found</p>
       ) : (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           {experiments.map((experiment) => (
             <ExperimentCard key={experiment.id} experiment={experiment} />
           ))}

@@ -1,5 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PostHogActions } from "../components/PostHogActions";
+import { PostHogExperimentActions } from "@/components/PostHogExperimentActions";
+import { PostHogFeatureFlagActions } from "@/components/PostHogFeatureFlagActions";
 
 export default function Home() {
   return (
@@ -16,6 +18,32 @@ export default function Home() {
               Test PostHog identify, group, and event capture functionality.
             </p>
             <PostHogActions />
+          </CardContent>
+        </Card>
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>
+              <h1>PostHog Experiment Test</h1>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">
+              Test PostHog experiment functionality.
+            </p>
+            <PostHogExperimentActions />
+          </CardContent>
+        </Card>
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>
+              <h1>PostHog Feature Flags</h1>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">
+              View all feature flags that you are part of.
+            </p>
+            <PostHogFeatureFlagActions />
           </CardContent>
         </Card>
       </main>

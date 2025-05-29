@@ -62,54 +62,56 @@ export function PostHogActions() {
   }
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-md">
-      <Card>
-        <CardHeader>
-          <CardTitle>Identify Person</CardTitle>
-        </CardHeader>
-        <CardContent className="flex gap-4">
-          <Input
-            placeholder="Enter person name"
-            value={personName}
-            onChange={(e) => setPersonName(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && identifyPerson()}
-          />
-          <Button onClick={identifyPerson}>Identify</Button>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Identify Group</CardTitle>
-        </CardHeader>
-        <CardContent className="flex gap-4">
-          <Input
-            placeholder="Enter group name"
-            value={groupName}
-            onChange={(e) => setGroupName(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && identifyGroup()}
-          />
-          <Button onClick={identifyGroup}>Identify</Button>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Custom Event</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <div className="flex gap-4">
+    <>
+      <div className="flex flex-col gap-4 w-full max-w-md">
+        <Card>
+          <CardHeader>
+            <CardTitle>Identify Person</CardTitle>
+          </CardHeader>
+          <CardContent className="flex gap-4">
             <Input
-              placeholder="Enter event name"
-              value={eventName}
-              onChange={(e) => setEventName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && fireCustomEvent()}
+              placeholder="Enter person name"
+              value={personName}
+              onChange={(e) => setPersonName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && identifyPerson()}
             />
-            <Button onClick={fireCustomEvent}>Fire Event</Button>
-          </div>
-          <Button variant="destructive" onClick={resetSession}>Reset Session</Button>
-        </CardContent>
-      </Card>
-    </div>
+            <Button onClick={identifyPerson}>Identify</Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Identify Group</CardTitle>
+          </CardHeader>
+          <CardContent className="flex gap-4">
+            <Input
+              placeholder="Enter group name"
+              value={groupName}
+              onChange={(e) => setGroupName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && identifyGroup()}
+            />
+            <Button onClick={identifyGroup}>Identify</Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Custom Event</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <div className="flex gap-4">
+              <Input
+                placeholder="Enter event name"
+                value={eventName}
+                onChange={(e) => setEventName(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && fireCustomEvent()}
+              />
+              <Button onClick={fireCustomEvent}>Fire Event</Button>
+            </div>
+            <Button variant="destructive" onClick={resetSession}>Reset Session</Button>
+          </CardContent>
+        </Card>
+      </div>
+    </>
   )
 } 

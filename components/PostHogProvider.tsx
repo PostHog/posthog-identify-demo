@@ -27,6 +27,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Failed to initialize PostHog:', error)
     }
+    (window as any).posthog = posthog
   }, [])
 
   return (

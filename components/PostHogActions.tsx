@@ -108,9 +108,9 @@ export function PostHogActions() {
               />
               <Button onClick={fireCustomEvent}>Fire Event</Button>
             </div>
-            <Button variant="destructive" onClick={resetSession}>Reset Session</Button>
           </CardContent>
         </Card>
+            <Button variant="destructive" onClick={resetSession}>Reset Session</Button>
       </div>
     </>
   )

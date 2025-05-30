@@ -1,10 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePostHog } from "posthog-js/react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 
 interface Experiment {
   id: number;
@@ -32,82 +37,66 @@ interface Experiment {
 }
 
 function ExperimentCard({ experiment }: { experiment: Experiment }) {
-  const posthog = usePostHog();
   const [generatingEvents, setGeneratingEvents] = useState(false);
 
   const generateExperimentEvents = async (experiment: Experiment) => {
     setGeneratingEvents(true);
     console.log("generating experiment events", experiment);
+
     let i = 0;
     while (i < 10) {
       i++;
-      posthog.reset();
-      posthog.identify(`user-${i}-${Date.now()}`);
-      posthog.featureFlags.overrideFeatureFlags({
-        flags: {
-          [experiment.feature_flag_key]:
-            experiment.parameters.feature_flag_variants[
-              Math.floor(
-                Math.random() *
-                  experiment.parameters.feature_flag_variants.length
-              )
-            ].key,
-        },
-      });
-
-      // wait for 1 second
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      posthog.getFeatureFlag(experiment.feature_flag_key);
 
       for (const metric of experiment.metrics) {
+        let eventName: string | undefined = undefined;
         if (metric.event) {
-          posthog.capture(metric.event as string, {
-            timestamp: new Date().toISOString(),
-            source: "identify-test",
-          });
+          eventName = metric.event as string;
         } else {
           Object.keys(metric).forEach((k) => {
             if (k !== "kind" && k !== "metric_type") {
               if (Array.isArray((metric[k] as any).series)) {
                 // capture legacy events
-                posthog.capture(
-                  (metric[k] as { series: { name: string }[] }).series[0]?.name,
-                  {
-                    timestamp: new Date().toISOString(),
-                    source: "identify-test",
-                  }
-                );
+                eventName = (metric[k] as { series: { name: string }[] })
+                  .series[0]?.name;
               } else {
                 // capture events for new experiment engine
-                posthog.capture((metric[k] as { name: string }).name, {
-                  timestamp: new Date().toISOString(),
-                  source: "identify-test",
-                });
+                eventName = (metric[k] as { name: string }).name;
               }
             }
           });
         }
+
+        if (eventName) {
+          fetch("/api/experiments/generate-events", {
+            method: "POST",
+            body: JSON.stringify({
+              distinctId: `user-${i}-${Date.now()}`,
+              event: eventName,
+              featureFlagKey: experiment.feature_flag_key,
+            }),
+          });
+        }
       }
     }
+    toast.success("Events generated successfully");
     setGeneratingEvents(false);
   };
 
   return (
-    <Card
-      key={experiment.id}
-    >
+    <Card key={experiment.id}>
       <CardHeader>
         <CardTitle>{experiment.name}</CardTitle>
       </CardHeader>
       <CardContent>
-          <p className="text-gray-600 mt-1">{experiment.description || "No hypothesis"}</p>
-      <div className="mt-2 text-sm text-gray-500">
-        <p>Feature Flag: {experiment.feature_flag_key}</p>
-        <p>
-          Start Date: {new Date(experiment.start_date).toLocaleDateString()}
+        <p className="text-gray-600 mt-1">
+          {experiment.description || "No hypothesis"}
         </p>
-      </div>
+        <div className="mt-2 text-sm text-gray-500">
+          <p>Feature Flag: {experiment.feature_flag_key}</p>
+          <p>
+            Start Date: {new Date(experiment.start_date).toLocaleDateString()}
+          </p>
+        </div>
         <Button
           onClick={() => {
             generateExperimentEvents(experiment);

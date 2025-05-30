@@ -50,7 +50,7 @@ export function PostHogFeatureFlagActions() {
                 <CardContent>
                 {featureFlags[flag] !== null && (
                   <div className="text-sm text-muted-foreground flex flex-col gap-2">
-                    <span><span className="font-medium">Variant:</span> {typeof(featureFlags[flag].variant) === 'boolean' ? featureFlags[flag].variant.toString() : featureFlags[flag].variant}</span>
+                    <span><span className="font-medium">{typeof(featureFlags[flag].variant) === 'boolean' ? "Boolean flag:" : "Multi-variant flag:"}</span> {typeof(featureFlags[flag].variant) === 'boolean' ? featureFlags[flag].variant ? "Flag is on for the user" : "Flag is off for the user" : `User is in the ${featureFlags[flag].variant} group`}</span>
                     <span><span className="font-medium">Payload:</span> {featureFlags[flag].payload ? JSON.stringify(featureFlags[flag].payload, null, 2) : "No payload"}</span>
                   </div>
                 )}
